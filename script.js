@@ -1,5 +1,6 @@
 
 var i = 0;
+var alarms = [];
 window.addEventListener("load",main);
 
 function horloge(){
@@ -8,7 +9,19 @@ function horloge(){
     var h = date.getHours();
     var m = date.getMinutes();
     var s = date.getSeconds();
-
+    for(var j=0;j<alarms.length;j++)
+    {
+        if(alarms[j] != null && document.getElementById("check"+j).checked && alarms[j].getHours() === h && alarms[j].getMinutes()===m)
+        {
+            console.log("alarm enabled");
+            var sound = document.createElement("audio");
+            sound.setAttribute("autoplay","true");
+            sound.setAttribute("src","sounds/alarm.mp3");
+            sound.setAttribute("id","sound"+j);
+            document.getElementById("Alarmes").appendChild(sound);
+            document.getElementById("check"+j).checked = false;
+        }
+    }
     document.getElementById("Horloge").innerHTML = h + ":" + m + ":" + s;
 
 }
@@ -24,7 +37,7 @@ function addAlarm(){
   var diff = document.createElement("label");
   diff.setAttribute("value", ":");
   var alarme = document.createElement("form");
-  alarme.setAttribute("id", "alarme"+i);
+  alarme.setAttribute("id", i);
   p.appendChild(alarme);
   var check = document.createElement("input");
   check.setAttribute("type", "checkbox");
@@ -50,15 +63,39 @@ function addAlarm(){
   text.setAttribute("id", "text"+i);
   text.setAttribute("placeholder","Nom alarme");
   alarme.appendChild(text);
-  var moins = document.createElement("button");
+  var moins = document.createElement("input");
   moins.setAttribute("type", "submit");
   moins.setAttribute("id", "moins"+i);
-  moins.setAttribute("value", "efogrzep");
+  moins.setAttribute("value", "delete");
   moins.setAttribute("onclick", "supprAlarm("+i+")");
+  heure.addEventListener("input",function(){
+      var id = this.getAttribute("id").substring(5,6);
+      alarms[id].setHours(this.value);
+      console.log(alarms[id].getHours());
+});
+  
+    minute.addEventListener("input",function(){
+      var id = this.getAttribute("id").substring(6,7);
+      alarms[id].setMinutes(this.value);
+      console.log(alarms[id].getMinutes());
+      
+});
+  
+    alarms.push(current);
+  
+  
   alarme.appendChild(moins);
   i++;
 }
 
+
+function updateHour(hour)
+{
+    
+}
+
 function supprAlarm(j){
-  document.getElementById("alarme"+j).remove();
+  document.getElementById(j).remove();
+  alarms[j] = null;
+  
 }
